@@ -1,10 +1,14 @@
+# code based on WifiManager by Tayfunulu
+# https://github.com/tayfunulu/WiFiManager
+
 import network
 import socket
 import ure
 import time
 
+
 ap_ssid = "WifiManager"
-ap_password = "tayfunulu"
+ap_password = "12345678"
 ap_authmode = 3  # WPA2
 connect_to_open_wifis = False
 
@@ -104,11 +108,11 @@ def do_connect(ssid, password):
     return connected
 
 
-def send_header(client, status_code=200, content_length=None ):
+def send_header(client, status_code=200, content_length=None):
     client.sendall("HTTP/1.0 {} OK\r\n".format(status_code))
     client.sendall("Content-Type: text/html\r\n")
     if content_length is not None:
-      client.sendall("Content-Length: {}\r\n".format(content_length))
+        client.sendall("Content-Length: {}\r\n".format(content_length))
     client.sendall("\r\n")
 
 
@@ -158,7 +162,7 @@ def handle_root(client):
             <p>&nbsp;</p>
             <hr />
         </html>
-    """ % dict(filename=NETWORK_PROFILES))
+    """)
     client.close()
 
 
@@ -285,12 +289,8 @@ def start(port=80):
             if "HTTP" not in request:  # skip invalid requests
                 continue
 
-            # version 1.9 compatibility
-            try:
-                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).decode("utf-8").rstrip("/")
-            except Exception:
-                url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request).group(1).rstrip("/")
-            print("URL is {}".format(url))
+            url = extract_url(request)
+            print("URL is '{}'".format(url))
 
             if url == "":
                 handle_root(client)
@@ -301,3 +301,17 @@ def start(port=80):
 
         finally:
             client.close()
+
+
+def extract_url(request):
+    groups = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request)
+    
+    # version 1.9 compatibility
+    try:
+        url = groups.group(1).decode("utf-8").rstrip("/")
+    except AttributeError:
+        url = groups.group(1).rstrip("/")
+    except IndexError:
+        url = ''
+
+    return url
