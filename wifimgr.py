@@ -168,16 +168,6 @@ def handle_root(client):
             <h2 style="color: #2e6c80;">
                 Some useful infos:
             </h2>
-            <ul>
-                <li>
-                    Original code from <a href="https://github.com/cpopp/MicroPythonSamples"
-                        target="_blank" rel="noopener">cpopp/MicroPythonSamples</a>.
-                </li>
-                <li>
-                    This code available at <a href="https://github.com/tayfunulu/WiFiManager"
-                        target="_blank" rel="noopener">tayfunulu/WiFiManager</a>.
-                </li>
-            </ul>
         </html>
     """ % dict(filename=NETWORK_PROFILES))
     client.close()
